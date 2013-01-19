@@ -8,6 +8,10 @@ A. 算法的实现
 5. 合并算法 
 
 B. 并发包的使用
+java5并发包中Lock/Condition同synchronized/object monitor区别。
+java5中Lock同Condition的关系是一对多，而java2种synchronized同Object Monitor是一对一的关系。
+所以java5并发包的控制的粒度更细。
+
 Java并发包的结构是按照以下层次构架的：Atomic->Sync->Channel->Executor。
 Atomic：实现了针对各种对象的原子操作CAS（compareAndSwtich）。
 Sync：基于Atomic实现了线程同步的各种锁定机制-互斥锁、信号灯等。
