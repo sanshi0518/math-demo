@@ -1,11 +1,92 @@
-这个项目主要包括一些算法的实现。
+这个项目主要包括一些算法的实现，并发包的使用，垃圾回收，内存泄漏的模拟等
 
+A. 算法的实现
 1. 排序算法： 冒泡排序，鸡尾酒排序,插入排序 ,选择排序 ,合并排序,快速排序,图书馆排序
 2. 查找算法： 
 3. 树算法： 
 4. 递归算法： 汉诺塔问题，求最大公约数
 5. 合并算法 
-6. 
-7. 
-8. 
-9. 
+
+B. 并发包的使用
+Java并发包的结构是按照以下层次构架的：Atomic->Sync->Channel->Executor。
+Atomic：实现了针对各种对象的原子操作CAS（compareAndSwtich）。
+Sync：基于Atomic实现了线程同步的各种锁定机制-互斥锁、信号灯等。
+Channel：使用Sync提供的锁机制实现了各种任务队列-阻塞队列、链表队列、优先级队列等。
+Executor：提供了多种线程管理方式-线程池等。这些管理方式是基于Channel所提供的任务队列来实现。
+可以参考:http://gee.cs.oswego.edu/dl/cpjslides/util.pdf
+
+1. Atomic 
+java.util.concurrent.atomic.AtomicInteger
+...
+2. Sync
+java.util.concurrent.locks.Lock,
+java.util.concurrent.locks.ReadWriteLock
+java.util.concurrent.locks.Condition
+...
+java.util.concurrent.CyclicBarrier
+java.util.concurrent.CountDownLatch
+java.util.concurrent.Semaphore
+java.util.concurrent.Exchanger
+...
+3. Channel 
+java.util.concurrent.ConcurrentMap
+java.util.concurrent.BlockingQueue
+java.util.concurrent.BlockingDeque
+...
+java.util.concurrent.CopyOnWriteArrayList
+java.util.concurrent.CopyOnWriteArraySet
+...
+4. Executor
+java.util.concurrent.Executors
+java.util.concurrent.Executor
+java.util.concurrent.ExecutorService
+java.util.concurrent.CompletionService
+java.util.concurrent.Callable
+java.util.concurrent.Future
+java.util.concurrent.RunnableFuture
+...
+java.util.concurrent.TimeUnit
+java.util.concurrent.Delayed
+java.util.concurrent.ScheduledFuture
+java.util.concurrent.RunnableScheduledFuture
+java.util.concurrent.ScheduledExecutorService
+...
+
+C. 垃圾回收
+垃圾回收的时候主要对堆进行回收。
+Sun的JVM主要分为Heap区和Perm区。
+Heap区分为：DefNew和Tenured带。
+Perm区分为：Perm带。
+共有两种GC，一般GC和FullGC。
+可以用以下JVM参数输出具体的GC信息。
+-XX:+PrintClassHistogram -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -Xloggc:gc.log
+-verbosegc
+
+D. 内存泄漏的模拟
+1. java.lang.OutOfMemoryError: Java heap space
+java堆空间不足,这种情况可能是内存堆发生泄漏造成的，也可能是堆空间太小。
+排查过程:
+加JVM参数-XX:+HeapDumpOnOutOfMemoryError，这样当发生堆益出时会生成dump文件，并分析其文件。
+加JVM参数-Xmx加大堆空间，监控其变化，如果持续增长，则代表堆泄漏。
+加JVMGC参数，监控其日志。
+用JvisualVM监控其内存变化。
+   
+2. java.lang.OutOfMemoryError: Direct buffer memory
+进程的内存空间用完,这种情况是native内存空间用完，32-bit进程2G(Windows),3G(Linux)。
+排查过程：
+这个比较麻烦，日志中会出现OOM，但不会生成dump文件。
+查找Native内存申请的地方，加日志，检查其是否会释放其申请内存。
+加JVM参数-Xmx减小堆空间，监控程序是否稳定。
+
+3. java.lang.OutOfMemoryError: unable to create new native thread
+不能创建新线程，因为java线程在OS中有对应的线程，所以这是由于进程内存空间不足造成的。
+Windows/Linux线程栈大小
+32-bit：JDK1.4及之前为256K，JDK1.5及之后为320k。
+64-bit:JDK1.5及之后为1024k。
+排查过程：
+用jstack导出线程镜像，检查是否线程创建过多。
+检查是否Native内存申请过多。
+加JVM参数-Xss线程栈空间，监控程序是否稳定。
+
+JVM Options:
+-XX:MaxPermSize=64m -XX:MaxPermSize=128m -Xms128m -Xmx512m -Xss256k -XX:+HeapDumpOnOutOfMemoryError
