@@ -20,7 +20,7 @@ public class ConditionDemo {
                             int put = 10 * index + j;
                             Thread.sleep((int) (Math.random() * 1000));
                             buffer.put(Integer.toString(put));
-                            System.out.println("PUT[" + index + "] Put: " + Integer.toString(put));
+                            System.out.println(Thread.currentThread() + " PUT[" + index + "] Put: " + put);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -45,7 +45,7 @@ public class ConditionDemo {
                         for (int j = 0; j < 5; j++) {
                             Thread.sleep((int) (Math.random() * 1000));
                             Object take = buffer.take();
-                            System.out.println("TAKE[" + index + "] Take: " + take);
+                            System.out.println(Thread.currentThread() + " TAKE[" + index + "] Take: " + take);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -74,7 +74,7 @@ public class ConditionDemo {
                 if (++putptr == items.length)
                     putptr = 0;//如果写索引写到队列的最后一个位置了，那么置为0  
                 ++count;//个数++  
-                notEmpty.signal();//唤醒读线程  
+                notEmpty.signalAll();//唤醒读线程  
             } finally {
                 lock.unlock();
             }
@@ -90,7 +90,7 @@ public class ConditionDemo {
                 if (++takeptr == items.length)
                     takeptr = 0;//如果读索引读到队列的最后一个位置了，那么置为0  
                 --count;//个数--  
-                notFull.signal();//唤醒写线程  
+                notFull.signalAll();//唤醒写线程  
                 return x;
             } finally {
                 lock.unlock();
