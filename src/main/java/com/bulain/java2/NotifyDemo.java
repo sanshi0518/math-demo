@@ -50,37 +50,42 @@ public class NotifyDemo {
         private static final int MAX = 1;
 
         private int count = 0;
+        private char[] mutex = new char[0];
 
-        public synchronized void increment() {
-            System.out.println(Thread.currentThread() + " Incre.enter()");
-            while (count >= MAX) {
-                try {
-                    System.out.println(Thread.currentThread() + " Incre.wait()");
-                    this.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        public void increment() {
+            synchronized (mutex) {
+                System.out.println(Thread.currentThread() + " Incre.enter()");
+                while (count >= MAX) {
+                    try {
+                        System.out.println(Thread.currentThread() + " Incre.wait()");
+                        mutex.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                System.out.println(Thread.currentThread() + " Incre.increment()");
+                count++;
+                System.out.println(Thread.currentThread() + " Incre.notifyAll()");
+                mutex.notifyAll();
             }
-            System.out.println(Thread.currentThread() + " Incre.increment()");
-            count++;
-            System.out.println(Thread.currentThread() + " Incre.notifyAll()");
-            this.notifyAll();
         }
 
-        public synchronized void decrease() {
-            System.out.println(Thread.currentThread() + " Decre.enter()");
-            while (count <= MIN) {
-                try {
-                    System.out.println(Thread.currentThread() + " Decre.wait()");
-                    this.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        public void decrease() {
+            synchronized (mutex) {
+                System.out.println(Thread.currentThread() + " Decre.enter()");
+                while (count <= MIN) {
+                    try {
+                        System.out.println(Thread.currentThread() + " Decre.wait()");
+                        mutex.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                System.out.println(Thread.currentThread() + " Decre.decrease()");
+                count--;
+                System.out.println(Thread.currentThread() + " Decre.notifyAll()");
+                mutex.notifyAll();
             }
-            System.out.println(Thread.currentThread() + " Decre.decrease()");
-            count--;
-            System.out.println(Thread.currentThread() + " Decre.notifyAll()");
-            this.notifyAll();
         }
     }
 
