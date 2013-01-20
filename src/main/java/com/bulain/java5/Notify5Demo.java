@@ -1,8 +1,12 @@
-package com.bulain.java2;
+package com.bulain.java5;
 
-public class NotifyDemo {
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Notify5Demo {
     public static void main(String[] args) {
-        BoundedBuffer buffer = new BoundedBuffer();
+        BoundedNunmber buffer = new BoundedNunmber();
         for (int i = 0; i < 2; i++) {
             Incre incr = new Incre(buffer);
             incr.start();
@@ -22,8 +26,8 @@ public class NotifyDemo {
     }
 
     static class Incre extends Thread {
-        private BoundedBuffer buffer;
-        public Incre(BoundedBuffer buffer) {
+        private BoundedNunmber buffer;
+        public Incre(BoundedNunmber buffer) {
             this.buffer = buffer;
         }
         public void run() {
@@ -34,8 +38,8 @@ public class NotifyDemo {
     }
 
     static class Decre extends Thread {
-        private BoundedBuffer buffer;
-        public Decre(BoundedBuffer buffer) {
+        private BoundedNunmber buffer;
+        public Decre(BoundedNunmber buffer) {
             this.buffer = buffer;
         }
         public void run() {
@@ -45,20 +49,23 @@ public class NotifyDemo {
         }
     }
 
-    static class BoundedBuffer {
+    static class BoundedNunmber {
         private static final int MIN = 0;
         private static final int MAX = 1;
 
         private int count = 0;
-        private char[] mutex = new char[0];
+        private Lock lock = new ReentrantLock();
+        private Condition notFull = lock.newCondition();
+        private Condition notEmpty = lock.newCondition();
 
         public void increment() {
-            synchronized (mutex) {
+            lock.lock();
+            try {
                 System.out.println(Thread.currentThread() + " Incre.enter()");
                 while (count >= MAX) {
                     try {
                         System.out.println(Thread.currentThread() + " Incre.wait()");
-                        mutex.wait();
+                        notFull.await();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -66,17 +73,20 @@ public class NotifyDemo {
                 System.out.println(Thread.currentThread() + " Incre.increment()");
                 count++;
                 System.out.println(Thread.currentThread() + " Incre.notifyAll()");
-                mutex.notifyAll();
+                notEmpty.signalAll();
+            } finally {
+                lock.unlock();
             }
         }
 
         public void decrease() {
-            synchronized (mutex) {
+            lock.lock();
+            try {
                 System.out.println(Thread.currentThread() + " Decre.enter()");
                 while (count <= MIN) {
                     try {
                         System.out.println(Thread.currentThread() + " Decre.wait()");
-                        mutex.wait();
+                        notEmpty.await();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -84,7 +94,9 @@ public class NotifyDemo {
                 System.out.println(Thread.currentThread() + " Decre.decrease()");
                 count--;
                 System.out.println(Thread.currentThread() + " Decre.notifyAll()");
-                mutex.notifyAll();
+                notFull.signalAll();
+            } finally {
+                lock.unlock();
             }
         }
     }
