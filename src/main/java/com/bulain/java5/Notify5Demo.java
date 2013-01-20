@@ -64,7 +64,7 @@ public class Notify5Demo {
                 System.out.println(Thread.currentThread() + " Incre.enter()");
                 while (count >= MAX) {
                     try {
-                        System.out.println(Thread.currentThread() + " Incre.wait()");
+                        System.out.println(Thread.currentThread() + " Incre.await()");
                         notFull.await();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -72,7 +72,7 @@ public class Notify5Demo {
                 }
                 System.out.println(Thread.currentThread() + " Incre.increment()");
                 count++;
-                System.out.println(Thread.currentThread() + " Incre.notifyAll()");
+                System.out.println(Thread.currentThread() + " Incre.signalAll()");
                 notEmpty.signalAll();
             } finally {
                 lock.unlock();
@@ -85,7 +85,7 @@ public class Notify5Demo {
                 System.out.println(Thread.currentThread() + " Decre.enter()");
                 while (count <= MIN) {
                     try {
-                        System.out.println(Thread.currentThread() + " Decre.wait()");
+                        System.out.println(Thread.currentThread() + " Decre.await()");
                         notEmpty.await();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -93,7 +93,7 @@ public class Notify5Demo {
                 }
                 System.out.println(Thread.currentThread() + " Decre.decrease()");
                 count--;
-                System.out.println(Thread.currentThread() + " Decre.notifyAll()");
+                System.out.println(Thread.currentThread() + " Decre.signalAll()");
                 notFull.signalAll();
             } finally {
                 lock.unlock();
