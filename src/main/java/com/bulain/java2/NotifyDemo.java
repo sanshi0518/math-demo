@@ -2,8 +2,8 @@ package com.bulain.java2;
 
 public class NotifyDemo {
     private static volatile int count = 0;
-    private static int MIN = 0;
-    private static int MAX = 1;
+    private static final int MIN = 0;
+    private static final int MAX = 1;
 
     public static void main(String[] args) {
         for (int i = 0; i < 2; i++) {
