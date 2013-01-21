@@ -22,16 +22,16 @@ public class CompletionServiceDemo {
             completionService.submit(new Task(i));
         }
 
-        try {
-            for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
+            try {
                 Future<Task> future = completionService.take();
                 Task task = future.get();
-                System.out.println("Task[" + task.index + "] finished, sleep " + task.timeout + "s");
+                System.out.println("Task[" + task.index + "] finished, sleep " + task.timeout + "ms");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
         }
 
         executorService.shutdown();
