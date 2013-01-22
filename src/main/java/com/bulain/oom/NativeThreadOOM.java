@@ -1,12 +1,11 @@
 package com.bulain.oom;
 
-
 public class NativeThreadOOM extends Thread {
     public static void main(String[] args) {
 
         NativeThreadOOM nativeThreadOOM = new NativeThreadOOM();
         nativeThreadOOM.start();
-        
+
     }
 
     public void run() {

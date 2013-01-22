@@ -1,20 +1,29 @@
 package com.bulain.java2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Notify2Demo {
     public static void main(String[] args) {
+        List<Thread> listThread = new ArrayList<Thread>();
+
         BoundedNunmber buffer = new BoundedNunmber();
         for (int i = 0; i < 2; i++) {
             Incre incr = new Incre(buffer);
+            listThread.add(incr);
             incr.start();
 
             Decre decr = new Decre(buffer);
+            listThread.add(decr);
             decr.start();
         }
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        for (Thread thread : listThread) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         System.out.println("The count number: " + buffer.count);

@@ -1,21 +1,29 @@
 package com.bulain.java2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SynchronizedDemo {
     private static volatile int count = 0;
 
     public static void main(String[] args) {
+        List<Thread> listThread = new ArrayList<Thread>();
         for (int i = 0; i < 10; i++) {
             Incre incr = new Incre();
+            listThread.add(incr);
             incr.start();
 
             Decre decr = new Decre();
+            listThread.add(decr);
             decr.start();
         }
 
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        for (Thread thread : listThread) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         System.out.println("The count number: " + count);

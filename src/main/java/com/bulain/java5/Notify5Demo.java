@@ -1,24 +1,32 @@
 package com.bulain.java5;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Notify5Demo {
     public static void main(String[] args) {
+        List<Thread> listThread = new ArrayList<Thread>();
+
         BoundedNunmber buffer = new BoundedNunmber();
         for (int i = 0; i < 2; i++) {
             Incre incr = new Incre(buffer);
+            listThread.add(incr);
             incr.start();
 
             Decre decr = new Decre(buffer);
+            listThread.add(decr);
             decr.start();
         }
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        for (Thread thread : listThread) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         System.out.println("The count number: " + buffer.count);
