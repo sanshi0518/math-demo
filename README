@@ -12,6 +12,17 @@ java5并发包中Lock/Condition同synchronized/object monitor区别。
 java5中Lock同Condition的关系是一对多，而java2种synchronized同Object Monitor是一对一的关系。
 所以java5并发包的控制的粒度更细。
 
+主要实现为native实现:Unsafe.park(), Unsafe.unpack(), Unsafe.compareAndSwapObject()。
+AtomicXXX的类的实现主要为：Unsafe.compareAndSwapObject()
+
+线程之间的同步都是基于以上三个方法构建的，但其中最主要的实现基类为：AbstractQueuedSynchronizer。
+其子类主要需要实现以下5个方法。
+tryAcquire(int)
+tryRelease(int)
+tryAcquireShared(int)
+tryReleaseShared(int)
+isHeldExclusively()
+
 Java并发包的结构是按照以下层次构架的：Atomic->Sync->Channel->Executor。
 Atomic：实现了针对各种对象的原子操作CAS（compareAndSwtich）。
 Sync：基于Atomic实现了线程同步的各种锁定机制-互斥锁、信号灯等。
