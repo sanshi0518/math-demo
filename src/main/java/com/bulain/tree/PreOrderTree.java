@@ -1,6 +1,6 @@
 package com.bulain.tree;
 
-public class PreOrderTraverse implements Tree {
+public class PreOrderTree extends AbstractTree implements Tree {
 
     public void traverse(Node node) {
         if (node == null) {

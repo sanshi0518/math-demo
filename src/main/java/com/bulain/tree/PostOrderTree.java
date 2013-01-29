@@ -1,6 +1,6 @@
 package com.bulain.tree;
 
-public class PostOrderTraverse implements Tree {
+public class PostOrderTree extends AbstractTree implements Tree {
 
     public void traverse(Node node) {
         if (node == null) {
@@ -10,4 +10,5 @@ public class PostOrderTraverse implements Tree {
         System.out.print(node.getValue());
         traverse(node.getLeft());
     }
+
 }

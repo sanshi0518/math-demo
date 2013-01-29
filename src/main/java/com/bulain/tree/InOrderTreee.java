@@ -1,6 +1,6 @@
 package com.bulain.tree;
 
-public class InOrderTraverse implements Tree {
+public class InOrderTreee extends AbstractTree implements Tree {
     public void traverse(Node node) {
         if (node == null) {
             return;

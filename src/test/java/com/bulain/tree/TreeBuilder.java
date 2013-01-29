@@ -9,6 +9,7 @@ public class TreeBuilder {
         Node leaf5 = new Node(5);
         Node leaf6 = new Node(6);
         Node leaf7 = new Node(7);
+        Node leaf8 = new Node(8);
 
         leaf4.setLeft(leaf2);
         leaf4.setRight(leaf6);
@@ -18,6 +19,8 @@ public class TreeBuilder {
 
         leaf6.setLeft(leaf5);
         leaf6.setRight(leaf7);
+        
+        leaf7.setRight(leaf8);
 
         return leaf4;
     }
