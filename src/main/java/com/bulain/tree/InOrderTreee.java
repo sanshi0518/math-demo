@@ -5,8 +5,8 @@ public class InOrderTreee extends AbstractTree implements Tree {
         if (node == null) {
             return;
         }
-        System.out.print(node.getValue());
         traverse(node.getLeft());
+        System.out.print(node.getValue());
         traverse(node.getRight());
     }
 }
